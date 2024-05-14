@@ -59,6 +59,10 @@ Examples:
 			log.Info("Running release command")
 			log.Debug("Getting latest git tag")
 
+			if len(args) > 1 {
+				log.Info("Too many arguments")
+			}
+
 			proj := config.Project{}
 			ctx := context.New(proj)
 			pipe := git.Pipe{}
@@ -84,8 +88,11 @@ Examples:
 			name := split[1]
 
 			ghc, err := client.NewGitHubClient(ctx, tok)
-			opts := &github.ListOptions{PerPage: 100}
+			if err != nil {
+				log.Fatal(err.Error())
+			}
 
+			opts := &github.ListOptions{PerPage: 100}
 			release, _, err := ghc.Repositories.GetReleaseByTag(ctx, owner, name, current)
 			if err != nil {
 				log.Fatal(err.Error())
@@ -127,9 +134,15 @@ Examples:
 						Subcomponents: []vex.Subcomponent{{vex.Component{ID: release.GetTagName()}}},
 					})
 				}
+				log.Info("Trying to find the appropriate info")
+				log.Info("email")
+				log.Info(*release.GetAuthor().Email)
+				log.Info("author")
+				log.Info(release.GetAuthor().String())
+
 				vex := &vex.VEX{
 					Metadata: vex.Metadata{
-						Author:     release.Author.GetEmail(),
+						Author:     *release.GetAuthor().Email,
 						Timestamp:  &now,
 						AuthorRole: "releaser",
 						Supplier:   owner,
