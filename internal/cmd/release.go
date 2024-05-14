@@ -136,7 +136,7 @@ Examples:
 				}
 				log.Info("Trying to find the appropriate info")
 				log.Info("email")
-				log.Info(*release.GetAuthor().Email)
+				log.Info(release.GetAuthor().String())
 				log.Info("author")
 				log.Info(release.GetAuthor().String())
 
