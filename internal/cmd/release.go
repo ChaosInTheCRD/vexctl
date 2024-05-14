@@ -134,15 +134,18 @@ Examples:
 						Subcomponents: []vex.Subcomponent{{vex.Component{ID: release.GetTagName()}}},
 					})
 				}
-				log.Info("Trying to find the appropriate info")
-				log.Info("email")
-				log.Info(release.GetAuthor().String())
-				log.Info("author")
-				log.Info(release.GetAuthor().String())
+
+				author := release.GetAuthor()
+				user := "UNKOWN"
+				if email := author.GetEmail(); email != "" {
+					user = email
+				} else if login := author.GetLogin(); login != "" {
+					user = login
+				}
 
 				vex := &vex.VEX{
 					Metadata: vex.Metadata{
-						Author:     *release.GetAuthor().Email,
+						Author:     user,
 						Timestamp:  &now,
 						AuthorRole: "releaser",
 						Supplier:   owner,
