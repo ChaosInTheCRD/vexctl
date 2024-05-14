@@ -114,6 +114,7 @@ Examples:
 						log.Debug("Failed to parse message %s, assuming not a vex statement and continuing")
 						continue
 					}
+					state.Timestamp = commit.GetCommit().Author.Date.GetTime()
 					statements = append(statements, state)
 				}
 				if resp.NextPage == 0 {
