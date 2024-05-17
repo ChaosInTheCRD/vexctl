@@ -8,7 +8,9 @@ require (
 	github.com/charmbracelet/x/exp/ordered v0.0.0-20240408110044-525ba71bb562
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/google/go-containerregistry v0.19.1
+	github.com/google/go-github/v61 v61.0.0
 	github.com/goreleaser/goreleaser v1.25.1
+	github.com/in-toto/go-witness v0.3.1
 	github.com/in-toto/in-toto-golang v0.9.0
 	github.com/openvex/go-vex v0.2.5
 	github.com/owenrumney/go-sarif v1.1.1
@@ -18,6 +20,7 @@ require (
 	github.com/sigstore/sigstore v1.8.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
+	golang.org/x/oauth2 v0.18.0
 	sigs.k8s.io/release-utils v0.7.7
 )
 
@@ -137,7 +140,6 @@ require (
 	github.com/google/gnostic-models v0.6.9-0.20230804172637-c7be7c783f49 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-github/v55 v55.0.0 // indirect
-	github.com/google/go-github/v61 v61.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
@@ -152,7 +154,6 @@ require (
 	github.com/hashicorp/hcl v1.0.1-vault-5 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/in-toto/archivista v0.4.0 // indirect
-	github.com/in-toto/go-witness v0.3.1 // indirect
 	github.com/invopop/jsonschema v0.12.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/jedisct1/go-minisign v0.0.0-20230811132847-661be99b8267 // indirect
@@ -242,7 +243,6 @@ require (
 	golang.org/x/exp v0.0.0-20240112132812-db7319d0e0e3 // indirect
 	golang.org/x/mod v0.16.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/oauth2 v0.18.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/term v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
