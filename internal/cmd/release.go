@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -17,10 +18,19 @@ import (
 	"github.com/google/go-github/v61/github"
 	"github.com/goreleaser/goreleaser/pkg/config"
 	"github.com/goreleaser/goreleaser/pkg/context"
+	witness "github.com/in-toto/go-witness"
+	"github.com/in-toto/go-witness/archivista"
+	"github.com/in-toto/go-witness/dsse"
+	"github.com/in-toto/go-witness/signer/fulcio"
+	"github.com/in-toto/go-witness/timestamp"
 	"github.com/openvex/go-vex/pkg/vex"
 	"github.com/openvex/vexctl/internal/client"
 	"github.com/openvex/vexctl/internal/pipe/git"
 	"github.com/spf13/cobra"
+)
+
+const (
+	Predicate = "https://openvex.dev/ns"
 )
 
 type releaseOptions struct{}
@@ -156,12 +166,43 @@ Examples:
 				}
 
 				log.Info("Printing VEX Document for testing")
-				json, err := json.Marshal(vex)
+				data, err := json.Marshal(vex)
 				if err != nil {
 					log.Fatal(err.Error())
 				}
 
-				log.Info(string(json))
+				// We want to attest the final VEX document
+				sp := fulcio.New(
+					fulcio.WithFulcioURL("https://fulcio.sigstore.dev"),
+					fulcio.WithToken(os.Getenv("GITHUB_TOKEN")),
+					fulcio.WithOidcClientID("sigstore"),
+				)
+				signer, err := sp.Signer(ctx)
+				if err != nil {
+					log.Fatal(err.Error())
+				}
+				timestamper := timestamp.NewTimestamper(timestamp.TimestampWithUrl("https://freetsa.org/tsr"))
+				reader := bytes.NewReader(data)
+				out := []byte{}
+				writer := bytes.NewBuffer(out)
+
+				err = witness.Sign(reader, Predicate, writer, dsse.SignWithSigners(signer), dsse.SignWithTimestampers(timestamper))
+				if err != nil {
+					log.Fatal(err.Error())
+				}
+
+				var dsse dsse.Envelope
+				if err := json.Unmarshal(writer.Bytes(), &dsse); err != nil {
+					log.Fatal(err.Error())
+				}
+
+				// we want to upload the final VEX document to Archivista
+				archivistaClient := archivista.New("http://127.0.01:8082")
+				if gitoid, err := archivistaClient.Store(ctx, dsse); err != nil {
+					return fmt.Errorf("failed to store artifact in archivista: %w", err)
+				} else {
+					log.Infof("Stored in archivista as %v\n", gitoid)
+				}
 
 			}
 			return err
