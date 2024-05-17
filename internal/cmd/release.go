@@ -174,7 +174,6 @@ Examples:
 				// We want to attest the final VEX document
 				sp := fulcio.New(
 					fulcio.WithFulcioURL("https://fulcio.sigstore.dev"),
-					fulcio.WithToken(os.Getenv("GITHUB_TOKEN")),
 					fulcio.WithOidcClientID("sigstore"),
 				)
 				signer, err := sp.Signer(ctx)
